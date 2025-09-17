@@ -1,0 +1,14 @@
+# Python virtual environment
+myenv/
+venv/
+__pycache__/
+*.pyc
+
+# Flask instance folder
+instance/
+
+# Migrations (optional if you want to generate on server)
+migrations/
+
+# Seed files (optional)
+seed.py
