@@ -44,7 +44,7 @@ def signup():
     if User.query.filter_by(email=email).first():
         return jsonify({"msg": "Email already registered"}), 400
 
-    user = User(name=name, email=email, phone=phone)
+    user = User(name=name, email=email, phone=phone, role="admin")
     user.password = password
     db.session.add(user)
     db.session.commit()
@@ -158,25 +158,5 @@ def password_reset(token):
 
 
 
-@auth_bp.route("/seed-admin", methods=["POST"])
-def seed_admin():
-    from app.models import User
-    from app.extensions import db, bcrypt
 
-    # Check if an admin already exists
-    if User.query.filter_by(email="superadmin@example.com").first():
-        return {"message": "⚠️ Admin already exists"}, 400
-
-    # Create admin with a secure password
-    hashed_pw = bcrypt.generate_password_hash("AdminPassword123").decode("utf-8")
-    admin = User(
-        username="superadmin",
-        email="superadmin@example.com",
-        password=hashed_pw,
-        role="admin"
-    )
-    db.session.add(admin)
-    db.session.commit()
-
-    return {"message": "✅ Superadmin created!"}, 201
 
