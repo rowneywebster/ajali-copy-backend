@@ -155,3 +155,28 @@ def password_reset(token):
     user.password = new_password
     db.session.commit()
     return jsonify({"msg": "Password updated successfully"})
+
+
+
+@auth_bp.route("/seed-admin", methods=["POST"])
+def seed_admin():
+    from app.models import User
+    from app.extensions import db, bcrypt
+
+    # Check if an admin already exists
+    if User.query.filter_by(email="superadmin@example.com").first():
+        return {"message": "⚠️ Admin already exists"}, 400
+
+    # Create admin with a secure password
+    hashed_pw = bcrypt.generate_password_hash("AdminPassword123").decode("utf-8")
+    admin = User(
+        username="superadmin",
+        email="superadmin@example.com",
+        password=hashed_pw,
+        role="admin"
+    )
+    db.session.add(admin)
+    db.session.commit()
+
+    return {"message": "✅ Superadmin created!"}, 201
+
