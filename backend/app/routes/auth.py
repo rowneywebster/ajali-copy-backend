@@ -44,7 +44,7 @@ def signup():
     if User.query.filter_by(email=email).first():
         return jsonify({"msg": "Email already registered"}), 400
 
-    user = User(name=name, email=email, phone=phone, role="admin")
+    user = User(name=name, email=email, phone=phone, role="user")
     user.password = password
     db.session.add(user)
     db.session.commit()
@@ -155,6 +155,28 @@ def password_reset(token):
     user.password = new_password
     db.session.commit()
     return jsonify({"msg": "Password updated successfully"})
+
+
+# ---------------------
+# Promote user (Admin only)
+# ---------------------
+@auth_bp.route("/promote/<int:user_id>", methods=["PUT"])
+@jwt_required()
+def promote_user(user_id):
+    current_user_id = int(get_jwt_identity())
+    current_user = User.query.get(current_user_id)
+
+    if current_user.role != "admin":
+        return jsonify({"msg": "Admins only"}), 403
+
+    user = User.query.get(user_id)
+    if not user:
+        return jsonify({"msg": "User not found"}), 404
+
+    user.role = "admin"
+    db.session.commit()
+
+    return jsonify({"msg": f"User {user.email} promoted to admin"}), 200
 
 
 
