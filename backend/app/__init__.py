@@ -10,6 +10,8 @@ from .routes.media import media_bp
 from .routes.comments import comments_bp
 from .routes.admin import admin_bp
 from .routes.users import users_bp
+from .routes.migrate import migrate_bp
+
 
 def create_app(config_class=Config):
     app = Flask(__name__)
@@ -28,5 +30,7 @@ def create_app(config_class=Config):
     app.register_blueprint(comments_bp)
     app.register_blueprint(admin_bp)
     app.register_blueprint(users_bp)
+    app.register_blueprint(migrate_bp)
+
 
     return app
